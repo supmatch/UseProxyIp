@@ -17,7 +17,6 @@ def get_ip_lists(num=1):
 		if ip_http == 'HTTPS':
 			key = 'https'
 		else:
-			key = 'http'
 			continue
 		value = '{}://{}:{}'.format(key, ip, port)
 		proxy = {
