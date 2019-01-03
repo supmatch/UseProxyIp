@@ -14,7 +14,7 @@ def get_ip_lists(num=1):
 		port = PyQuery(items)('td:nth-child(3)').text()
 		ip_http = PyQuery(items)('td:nth-child(6)').text()
 
-		if ip_http == 'HTTP':
+		if ip_http == 'HTTPS':
 			key = 'https'
 		else:
 			key = 'http'
