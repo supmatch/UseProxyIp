@@ -35,7 +35,7 @@ if __name__ == '__main__':
 		#headers看情况可以多弄几个进行随机，不然n多请求全是同样的headers可能会被反爬虫干掉
 		response = requests.get('https://www.supmatch.xyz/', headers=headers, proxies=proxy, timeout=2)
 		s = requests.session()
-		print('{}---{}'.format(ip,response.status_code))
+		print('{}---{}'.format(proxy_ip,response.status_code))
 		s.keep_alive = False
 	except:
 		print('timeout')
