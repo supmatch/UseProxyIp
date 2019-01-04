@@ -1,12 +1,14 @@
 import requests
 from pyquery import PyQuery
+import random
 
 
-def get_ip_lists(num=1):
-	url = 'https://www.xicidaili.com/nn/{}'.format(num)
-	headers = {
-		'User-Agent': 'Mozilla/5.0(Macintosh; Inter Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
+headers = {
+	'User-Agent': 'Mozilla/5.0(Macintosh; Inter Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36'
 	}
+def get_ip_lists(num=1):
+	proxy_ip_list = []
+	url = 'https://www.xicidaili.com/nn/{}'.format(num)
 	html = requests.get(url, headers=headers).text
 	html_table = PyQuery(html)('#ip_list tr')
 	for items in html_table:
@@ -19,17 +21,21 @@ def get_ip_lists(num=1):
 		else:
 			key = 'https'
 		value = '{}://{}:{}'.format(key, ip, port)
-		proxy = {
-			key: value
+		proxy_ip_list.append(value)
+	return proxy_ip_list
+		
+###将代理ip作为一个代理池，随机提取某个做临时代理爬取数据
+if __name__ == '__main__':
+	proxy_ip_list = get_ip_lists()
+	proxy_ip = random.sample(proxy_ip_list, 1)
+	proxy = {
+		'https': proxy_ip
 		}
-		try:
-			#headers看情况可以多弄几个进行随机，不然n多请求全是同样的headers可能会被反爬虫干掉
-			response = requests.get('https://www.supmatch.xyz/', headers=headers, proxies=proxy, timeout=2)
-			s = requests.session()
-			print('{}---{}'.format(ip,response.status_code))
-			s.keep_alive = False
-		except:
-			print('timeout')
-#这里是循环页码，先跑个10页的ip	
-for num in range(1,11):
-	get_ip_lists(num)
+	try:
+		#headers看情况可以多弄几个进行随机，不然n多请求全是同样的headers可能会被反爬虫干掉
+		response = requests.get('https://www.supmatch.xyz/', headers=headers, proxies=proxy, timeout=2)
+		s = requests.session()
+		print('{}---{}'.format(ip,response.status_code))
+		s.keep_alive = False
+	except:
+		print('timeout')
